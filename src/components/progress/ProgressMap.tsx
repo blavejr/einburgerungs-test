@@ -38,6 +38,10 @@ export function ProgressMap({ big = false, onSelect }: { big?: boolean; onSelect
           noch nie
         </span>
         <span>
+          <i style={{ background: "var(--gold)" }} />
+          warm – noch unsicher
+        </span>
+        <span>
           <i style={{ background: "var(--red)" }} />
           zuletzt falsch
         </span>

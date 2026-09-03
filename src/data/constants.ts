@@ -1,6 +1,8 @@
 export const STORAGE_KEY = "ebt-by-v1";
 export const DAY_MS = 86_400_000;
 export const INTERVALS = [0, 1, 3, 7, 14, 30] as const;
+export const WRONG_RETRY_GAP = 4;
+export const WARM_RETRY_GAP = 6;
 export const IMAGE_BASE = "https://www.einbuergerungstest-online.de/img/fragen/";
 export const TEST_LENGTH = 33;
 export const TEST_FEDERAL = 30;

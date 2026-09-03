@@ -72,6 +72,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         title: learnTitle(options),
         total: queue.length,
         retryIds: [],
+        warmIds: [],
       });
       navigate("/learn/session");
       return true;

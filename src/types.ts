@@ -34,6 +34,7 @@ export interface ProgressRecord {
   seen: number;
   ok: number;
   ko: number;
+  warm?: boolean;
 }
 
 export interface DayStats {
@@ -106,6 +107,7 @@ export interface LearnSession {
   title: string;
   total: number;
   retryIds: number[];
+  warmIds: number[];
 }
 
 export interface CardsSession {
