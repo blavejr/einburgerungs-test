@@ -1,8 +1,9 @@
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { GoalRing } from "@/components/progress/GoalRing";
 import { ProgressMap } from "@/components/progress/ProgressMap";
 import { CATEGORIES, CATEGORY_ORDER } from "@/data/categories";
 import { TOTAL_QUESTIONS } from "@/data/questions";
+import { useAuth } from "@/context/AuthContext";
 import { useProgress } from "@/context/ProgressContext";
 import { useSession } from "@/context/SessionContext";
 import { useToast } from "@/context/ToastContext";
@@ -12,6 +13,7 @@ import { categoryBreakdown, dashboardStats } from "@/lib/stats";
 export function HomePage() {
   const navigate = useNavigate();
   const { store } = useProgress();
+  const { user, ready, configured } = useAuth();
   const { startLearn, startCards } = useSession();
   const { toast } = useToast();
   const stats = dashboardStats(store);
@@ -28,6 +30,17 @@ export function HomePage() {
         33 Fragen, 60 Minuten, 17 richtig reicht. Der Trainer zeigt dir zuerst, was fällig oder
         falsch war, mischt die Themen und wiederholt in wachsenden Abständen – so bleibt es hängen.
       </p>
+      {configured && ready && !user ? (
+        <div className="account-banner">
+          <div>
+            <b>Konto speichert den Fortschritt</b>
+            <p>Ohne Anmeldung merkt sich nur dieser Browser den Stand – nach einem Refresh oft weg.</p>
+          </div>
+          <Link to="/settings#konto" className="btn sm">
+            Anmelden
+          </Link>
+        </div>
+      ) : null}
 
       <div className="numbers">
         <div className="num goal">

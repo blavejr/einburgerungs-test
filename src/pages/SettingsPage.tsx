@@ -1,12 +1,13 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import { AccountCard } from "@/components/auth/AccountCard";
 import { INTERVALS } from "@/data/constants";
 import { useProgress } from "@/context/ProgressContext";
 import { useToast } from "@/context/ToastContext";
 
 export function SettingsPage() {
   const navigate = useNavigate();
-  const { store, setCfg, exportJson, importStore, reset } = useProgress();
+  const { store, cloudSaving, setCfg, exportJson, importStore, reset } = useProgress();
   const { toast } = useToast();
   const [exam, setExam] = useState(store.cfg.exam);
   const [goal, setGoal] = useState(String(store.cfg.goal));
@@ -17,6 +18,10 @@ export function SettingsPage() {
   return (
     <div className="view setup settings">
       <h1>Einstellungen</h1>
+      <h2>Konto</h2>
+      <AccountCard saving={cloudSaving} />
+
+      <h2>Prüfung</h2>
       <div className="card">
         <label htmlFor="st-exam">Prüfungstermin</label>
         <input id="st-exam" type="date" value={exam} onChange={(event) => setExam(event.target.value)} />
@@ -55,8 +60,8 @@ export function SettingsPage() {
       <h2>Fortschritt sichern</h2>
       <div className="card">
         <p style={{ margin: "0 0 10px", color: "var(--ink2)", fontSize: 14 }}>
-          Der Fortschritt liegt im Browser (localStorage). Für ein anderes Gerät oder als Backup:
-          exportieren und dort einfügen.
+          Mit Konto liegt der Stand in der Cloud. Zusätzlich merkt ihn dieser Browser, und du kannst
+          ihn hier als Text exportieren.
         </p>
         <div className="row">
           <button

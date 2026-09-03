@@ -8,3 +8,24 @@ services:
       - type: rewrite
         source: /*
         destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://einburgerungs-api.onrender.com
+
+  - type: web
+    name: einburgerungs-api
+    runtime: node
+    region: frankfurt
+    plan: free
+    buildCommand: npm install --prefix server
+    startCommand: npm start --prefix server
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_NAME
+        value: einburgerung
+      - key: DATABASE_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://einburgerungs-test.onrender.com

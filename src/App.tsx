@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { Toast } from "@/components/ui/Toast";
+import { AuthProvider } from "@/context/AuthContext";
 import { ProgressProvider } from "@/context/ProgressContext";
 import { SessionProvider } from "@/context/SessionContext";
 import { ToastProvider } from "@/context/ToastContext";
@@ -59,11 +60,13 @@ export default function App() {
   return (
     <BrowserRouter>
       <ToastProvider>
-        <ProgressProvider>
-          <SessionProvider>
-            <AppShell />
-          </SessionProvider>
-        </ProgressProvider>
+        <AuthProvider>
+          <ProgressProvider>
+            <SessionProvider>
+              <AppShell />
+            </SessionProvider>
+          </ProgressProvider>
+        </AuthProvider>
       </ToastProvider>
     </BrowserRouter>
   );

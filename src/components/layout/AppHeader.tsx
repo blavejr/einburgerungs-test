@@ -1,4 +1,5 @@
 import { NavLink } from "react-router";
+import { useAuth } from "@/context/AuthContext";
 import { useProgress } from "@/context/ProgressContext";
 import { daysToExam } from "@/lib/dates";
 import { countDue, dashboardStats, getTodayStats } from "@/lib/stats";
@@ -16,6 +17,7 @@ const links = [
 
 export function AppHeader() {
   const { store } = useProgress();
+  const { user } = useAuth();
   const today = getTodayStats(store);
   const due = countDue(store);
   const streak = dashboardStats(store).streak;
@@ -40,6 +42,11 @@ export function AppHeader() {
           <span>
             <b>{due}</b> fällig
           </span>
+          {user ? (
+            <NavLink to="/settings#konto" className="account-chip">
+              {user.name}
+            </NavLink>
+          ) : null}
         </div>
         <nav>
           {links.map((link) => (

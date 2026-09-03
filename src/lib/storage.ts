@@ -50,3 +50,12 @@ export function saveStore(store: AppStore): boolean {
 export function isAppStore(value: unknown): value is AppStore {
   return typeof value === "object" && value !== null && "p" in value && typeof value.p === "object";
 }
+
+export function hasProgressData(store: AppStore): boolean {
+  return (
+    Object.keys(store.p).length > 0 ||
+    Object.keys(store.v).length > 0 ||
+    store.tests.length > 0 ||
+    Object.keys(store.days).length > 0
+  );
+}
