@@ -10,6 +10,7 @@ export function isSessionPath(pathname: string): boolean {
 export function isMorePath(pathname: string): boolean {
   return (
     pathname === "/more" ||
+    pathname.startsWith("/topics") ||
     pathname.startsWith("/cards") ||
     pathname.startsWith("/browse") ||
     pathname.startsWith("/map") ||
