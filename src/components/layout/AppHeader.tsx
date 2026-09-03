@@ -1,54 +1,28 @@
-import { NavLink } from "react-router";
+import { NavLink, useLocation } from "react-router";
+import { EnglishToggle } from "@/components/ui/EnglishToggle";
 import { useAuth } from "@/context/AuthContext";
-import { useProgress } from "@/context/ProgressContext";
-import { daysToExam } from "@/lib/dates";
-import { countDue, dashboardStats, getTodayStats } from "@/lib/stats";
-
-const links = [
-  { to: "/", label: "Start", end: true },
-  { to: "/learn", label: "Lernen" },
-  { to: "/cards", label: "Karten" },
-  { to: "/vocab", label: "Wörter" },
-  { to: "/test", label: "Prüfung" },
-  { to: "/browse", label: "Alle Fragen" },
-  { to: "/map", label: "Karte" },
-  { to: "/settings", label: "⚙" },
-] as const;
+import { isMorePath, PRIMARY_NAV } from "@/lib/routes";
 
 export function AppHeader() {
-  const { store } = useProgress();
   const { user } = useAuth();
-  const today = getTodayStats(store);
-  const due = countDue(store);
-  const streak = dashboardStats(store).streak;
+  const { pathname } = useLocation();
   const accountLabel = user ? user.name.split(" ")[0] : "Konto";
 
   return (
-    <div className="top">
+    <header className="top">
       <div className="top-in">
         <NavLink to="/" end className="brand">
           <span className="flag" />
           Einbürgerungstest <small>Bayern</small>
         </NavLink>
-        <NavLink to="/settings#konto" className={`account-chip${user ? " in" : ""}`}>
-          {accountLabel}
-        </NavLink>
-        <div className="stat">
-          <span>
-            <b>{daysToExam(store.cfg.exam)}</b> Tage bis zur Prüfung
-          </span>
-          <span>
-            <b>{streak}</b> 🔥 Serie
-          </span>
-          <span>
-            Heute <b>{today.n}</b>/{store.cfg.goal}
-          </span>
-          <span>
-            <b>{due}</b> fällig
-          </span>
+        <div className="top-tools">
+          <EnglishToggle />
+          <NavLink to="/settings#konto" className={`account-chip${user ? " in" : ""}`}>
+            {accountLabel}
+          </NavLink>
         </div>
-        <nav>
-          {links.map((link) => (
+        <nav className="main-nav" aria-label="Hauptmenü">
+          {PRIMARY_NAV.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
@@ -58,8 +32,11 @@ export function AppHeader() {
               {link.label}
             </NavLink>
           ))}
+          <NavLink to="/more" className={isMorePath(pathname) ? "on" : ""}>
+            Mehr
+          </NavLink>
         </nav>
       </div>
-    </div>
+    </header>
   );
 }

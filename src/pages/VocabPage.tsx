@@ -9,9 +9,9 @@ import { vocabExample, vocabNeedle, vocabStats } from "@/lib/vocab";
 import type { VocabMode, VocabTopic } from "@/types";
 
 const MODES: { value: VocabMode; label: string }[] = [
-  { value: "smart", label: "Kluge Wiederholung" },
-  { value: "wrong", label: "Nur unsichere" },
-  { value: "new", label: "Nur neue" },
+  { value: "smart", label: "Empfohlen" },
+  { value: "wrong", label: "Unsichere" },
+  { value: "new", label: "Neue Wörter" },
   { value: "random", label: "Zufällig" },
 ];
 
@@ -42,9 +42,10 @@ export function VocabPage() {
     <div className="view">
       <h1>Wortschatz</h1>
       <p className="lead">
-        Schwere Wörter aus den echten Prüfungsfragen – für B1. Ein Wort wie <b>vertritt</b> oder{" "}
-        <b>Urteil</b> kann die ganze Frage kippen. Hier siehst du die einfache Bedeutung und den
-        Satz aus dem Test.
+        Schwere Wörter aus den Prüfungsfragen – Bedeutung und der Satz aus dem Test.
+        {store.cfg.en && (
+          <span className="en-lead">Hard words from the real questions — meaning plus the exam sentence.</span>
+        )}
       </p>
 
       <div className="numbers">

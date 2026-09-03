@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { ChipGroup } from "@/components/ui/ChipGroup";
 import { CATEGORIES, CATEGORY_ORDER } from "@/data/categories";
+import { useProgress } from "@/context/ProgressContext";
 import { useSession } from "@/context/SessionContext";
 import type { CardsMode, CategoryId } from "@/types";
 
 const MODES: { value: CardsMode; label: string }[] = [
-  { value: "smart", label: "Kluge Wiederholung" },
-  { value: "wrong", label: "Nur Fehler" },
-  { value: "new", label: "Nur neue" },
+  { value: "smart", label: "Empfohlen" },
+  { value: "wrong", label: "Meine Fehler" },
+  { value: "new", label: "Neue Fragen" },
   { value: "random", label: "Zufällig" },
 ];
 
 export function CardsPage() {
+  const { store } = useProgress();
   const { startCards } = useSession();
   const [mode, setMode] = useState<CardsMode>("smart");
   const [cat, setCat] = useState<CategoryId | "">("");
@@ -21,8 +23,8 @@ export function CardsPage() {
     <div className="view setup">
       <h1>Karteikarten</h1>
       <p className="lead">
-        Lies die Frage, sag dir die Antwort <em>bevor</em> du aufdeckst, und bewerte ehrlich. Selbst
-        abrufen statt wiedererkennen – das ist der stärkste Lerneffekt.
+        Frage lesen, Antwort selbst sagen, dann aufdecken. Ehrlich bewerten.
+        {store.cfg.en && <span className="en-lead">Read the question, say the answer, then flip. Grade yourself honestly.</span>}
       </p>
       <div className="card">
         <div className="grp">

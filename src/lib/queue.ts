@@ -85,12 +85,12 @@ export function pickCardIds(store: AppStore, options: CardsOptions): number[] {
 export function learnTitle(options: LearnOptions): string {
   if (options.mode === "cat" && options.cat) return CATEGORIES[options.cat].de;
   return {
-    smart: "Kluge Wiederholung",
-    wrong: "Nur Fehler",
+    smart: "Empfohlen",
+    wrong: "Meine Fehler",
     new: "Neue Fragen",
-    all: "Alle Fragen",
+    all: "Der Reihe nach",
     random: "Zufällig",
-    single: "Einzelne Frage",
+    single: "Eine Frage",
     cat: "Thema",
   }[options.mode];
 }

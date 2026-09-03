@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { Navigate, useNavigate } from "react-router";
+import { EnglishToggle } from "@/components/ui/EnglishToggle";
 import { HighlightedText } from "@/components/vocab/HighlightedText";
 import { VOCAB_BY_ID, VOCAB_TOPICS } from "@/data/vocabulary";
 import { useProgress } from "@/context/ProgressContext";
@@ -103,9 +104,10 @@ export function VocabSessionPage() {
         <div className="prog">
           <i style={{ width: `${(vocab.idx / vocab.ids.length) * 100}%` }} />
         </div>
-        <span style={{ fontSize: 13, fontWeight: 700, color: "var(--ink2)" }}>
+        <span className="learn-count">
           {vocab.idx + 1}/{vocab.ids.length}
         </span>
+        <EnglishToggle />
       </div>
 
       {vocab.kind === "cards" ? (
@@ -202,9 +204,10 @@ export function VocabSessionPage() {
               {entry.hint && <span style={{ fontWeight: 600, fontSize: 13 }}>{entry.hint}</span>}
             </div>
           )}
-          <div className="q-foot">
+          <div className="q-foot sticky-foot">
+            <EnglishToggle />
             <span className="hint">
-              Tasten <span className="kbd">1</span>–<span className="kbd">4</span>
+              <span className="kbd">1</span>–<span className="kbd">4</span>
             </span>
             {vocab.picked != null && (
               <button type="button" className="btn" onClick={() => rate(vocab.picked === choice.k)}>
