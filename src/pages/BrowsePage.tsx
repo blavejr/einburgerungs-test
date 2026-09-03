@@ -23,7 +23,7 @@ export function BrowsePage() {
       if (cat && question.c !== cat) return false;
       if (
         needle &&
-        !`${question.q} ${question.eq} ${question.a.join(" ")} ${question.ea.join(" ")}`
+        !`${question.q} ${question.eq} ${question.a.join(" ")} ${question.ea.join(" ")} ${question.info} ${question.einfo}`
           .toLowerCase()
           .includes(needle)
       ) {
@@ -40,8 +40,8 @@ export function BrowsePage() {
     <div className="view">
       <h1>Alle {QUESTIONS.length} Fragen</h1>
       <p className="lead">
-        300 Bundesfragen und 10 Bayern-Fragen mit Antwort (grün) und Übersetzung. Zum Nachschlagen
-        und Durchlesen; zum Einprägen lieber Lernen oder Karten.
+        300 Bundesfragen und 10 Bayern-Fragen mit Antwort (grün), kurzer Erklärung und Übersetzung.
+        Zum Nachschlagen und Durchlesen; zum Einprägen lieber Lernen oder Karten.
       </p>
       <div className="filters">
         <input

@@ -27,8 +27,8 @@ export function LearnPage() {
     <div className="view setup">
       <h1>Lernen</h1>
       <p className="lead">
-        Antwort tippen, sofort sehen ob richtig. Falsche Fragen kommen ein paar Fragen später noch
-        einmal, bis du sie triffst.
+        Antwort tippen, sofort sehen ob richtig. Bei Fehlern erscheint eine kurze Erklärung; nach
+        einer richtigen Antwort kannst du sie dir ansehen. Falsche Fragen kommen später noch einmal.
       </p>
       <div className="card">
         <div className="grp">

@@ -1,3 +1,4 @@
+import { AnswerInfo } from "@/components/question/AnswerInfo";
 import { QuestionImage } from "@/components/question/QuestionImage";
 import { useProgress } from "@/context/ProgressContext";
 import type { Question } from "@/types";
@@ -73,6 +74,9 @@ export function QuestionItem({
             );
           })}
         </ol>
+      )}
+      {showAnswers && (
+        <AnswerInfo question={question} english={store.cfg.en} defaultOpen />
       )}
     </div>
   );
