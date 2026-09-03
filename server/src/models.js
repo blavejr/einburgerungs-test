@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     passwordHash: { type: String, required: true },
   },
-  { timestamps: true },
+  { timestamps: true, collection: "users" },
 );
 
 const progressSchema = new mongoose.Schema(
@@ -18,7 +18,7 @@ const progressSchema = new mongoose.Schema(
     tests: { type: [mongoose.Schema.Types.Mixed], default: [] },
     cfg: { type: mongoose.Schema.Types.Mixed, default: {} },
   },
-  { timestamps: true },
+  { timestamps: true, collection: "progress" },
 );
 
 export const User = mongoose.model("User", userSchema);
