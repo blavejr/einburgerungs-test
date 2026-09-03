@@ -10,7 +10,7 @@ import type { CategoryId } from "@/types";
 
 export function BrowsePage() {
   const [params] = useSearchParams();
-  const { store, setCfg } = useProgress();
+  const { store } = useProgress();
   const { startLearn } = useSession();
   const [query, setQuery] = useState("");
   const [cat, setCat] = useState<CategoryId | "">((params.get("cat") as CategoryId) || "");
@@ -40,14 +40,16 @@ export function BrowsePage() {
     <div className="view">
       <h1>Alle {QUESTIONS.length} Fragen</h1>
       <p className="lead">
-        300 Bundesfragen und 10 Bayern-Fragen mit Antwort (grün), kurzer Erklärung und Übersetzung.
-        Zum Nachschlagen und Durchlesen; zum Einprägen lieber Lernen oder Karten.
+        300 Bundesfragen und 10 Bayern-Fragen. Zum Nachschlagen; zum Einprägen lieber Lernen.
+        {store.cfg.en && (
+          <span className="en-lead">300 federal questions plus 10 for Bavaria. Use this to look things up.</span>
+        )}
       </p>
       <div className="filters">
         <input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Suchen (Deutsch oder Englisch)…"
+          placeholder={store.cfg.en ? "Search German or English…" : "Suchen…"}
         />
         <select value={cat} onChange={(event) => setCat(event.target.value as CategoryId | "")}>
           <option value="">Alle Themen</option>
@@ -64,10 +66,7 @@ export function BrowsePage() {
           <option value="r">Richtig</option>
         </select>
         <button type="button" className={`chip${showAnswers ? " on" : ""}`} onClick={() => setShowAnswers((v) => !v)}>
-          Antworten zeigen
-        </button>
-        <button type="button" className={`chip${store.cfg.en ? " on" : ""}`} onClick={() => setCfg({ en: !store.cfg.en })}>
-          Englisch
+          Antworten
         </button>
       </div>
       <div className="list">

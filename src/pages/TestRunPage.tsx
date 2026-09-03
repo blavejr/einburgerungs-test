@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router";
 import { OptionList } from "@/components/question/OptionList";
 import { QuestionImage } from "@/components/question/QuestionImage";
+import { EnglishToggle } from "@/components/ui/EnglishToggle";
 import { TEST_LENGTH } from "@/data/constants";
 import { QUESTIONS_BY_ID } from "@/data/questions";
 import { useProgress } from "@/context/ProgressContext";
@@ -78,6 +79,7 @@ export function TestRunPage() {
         </button>
         <b>Prüfung</b>
         <span className="grow" />
+        <EnglishToggle />
         <span className={`timer${left < 300 ? " low" : ""}`}>{formatTimer(left)}</span>
       </div>
       <div className="test-nav">
@@ -109,7 +111,7 @@ export function TestRunPage() {
           selected={test.ans[question.i] ?? null}
           onSelect={select}
         />
-        <div className="q-foot">
+        <div className="q-foot sticky-foot">
           <button
             type="button"
             className="btn sec"
@@ -118,8 +120,9 @@ export function TestRunPage() {
           >
             ← Zurück
           </button>
+          <EnglishToggle />
           <span className="hint">
-            {answered}/{TEST_LENGTH} beantwortet
+            {answered}/{TEST_LENGTH}
           </span>
           {test.idx < TEST_LENGTH - 1 ? (
             <button type="button" className="btn" onClick={() => setTest({ ...test, idx: test.idx + 1 })}>

@@ -5,6 +5,7 @@ import { CategoryLabel } from "@/components/question/CategoryLabel";
 import { OptionList } from "@/components/question/OptionList";
 import { QuestionImage } from "@/components/question/QuestionImage";
 import { QuestionItem } from "@/components/question/QuestionItem";
+import { EnglishToggle } from "@/components/ui/EnglishToggle";
 import { INTERVALS } from "@/data/constants";
 import { QUESTIONS_BY_ID } from "@/data/questions";
 import { useProgress } from "@/context/ProgressContext";
@@ -15,7 +16,7 @@ import { shuffle } from "@/lib/shuffle";
 
 export function LearnSessionPage() {
   const navigate = useNavigate();
-  const { store, mark, setCfg } = useProgress();
+  const { store, mark } = useProgress();
   const { learn, setLearn, startLearn } = useSession();
   const [chosen, setChosen] = useState<number | null>(null);
   const [early, setEarly] = useState(false);
@@ -61,11 +62,9 @@ export function LearnSessionPage() {
           answer(Number(event.key) - 1);
         } else if (event.key === "Enter" && chosen !== null) {
           goNext();
-        } else if (event.key.toLowerCase() === "e") {
-          setCfg({ en: !store.cfg.en });
         }
       },
-      [answer, chosen, finished, goNext, question, setCfg, store.cfg.en],
+      [answer, chosen, finished, goNext, question],
     ),
   );
 
@@ -142,30 +141,17 @@ export function LearnSessionPage() {
         <div className="prog">
           <i style={{ width: `${(learn.answered / learn.total) * 100}%` }} />
         </div>
-        <span style={{ fontSize: 13, fontWeight: 700, color: "var(--ink2)" }}>
+        <span className="learn-count">
           {learn.answered}/{learn.total} · {learn.ok} ✓
         </span>
+        <EnglishToggle />
       </div>
       <div className="q">
         <div className="meta">
           <span>Frage {question.i}</span>
           <CategoryLabel id={question.c} />
-          {learn.retryIds.includes(question.i) && <span style={{ color: "var(--red)" }}>Wiederholung</span>}
-          {record?.seen ? (
-            <span>
-              {record.ok}✓ {record.ko}✗ · Stufe {record.box}
-            </span>
-          ) : (
-            <span>neu</span>
-          )}
-          <button
-            type="button"
-            className="btn ghost sm"
-            style={{ marginLeft: "auto" }}
-            onClick={() => setCfg({ en: !store.cfg.en })}
-          >
-            {store.cfg.en ? "EN aus" : "EN an"}
-          </button>
+          {learn.retryIds.includes(question.i) && <span className="retry">Wiederholung</span>}
+          {record?.seen ? <span className="quiet">Stufe {record.box}</span> : <span className="quiet">neu</span>}
         </div>
         <p className="qt">{question.q}</p>
         {store.cfg.en && <div className="en">{question.eq}</div>}
@@ -206,10 +192,16 @@ export function LearnSessionPage() {
             />
           </div>
         )}
-        <div className="q-foot">
+        <div className="q-foot sticky-foot">
+          <EnglishToggle />
           <span className="hint">
-            Tasten <span className="kbd">1</span>–<span className="kbd">4</span> · <span className="kbd">Enter</span>{" "}
-            weiter · <span className="kbd">E</span> Englisch
+            <span className="kbd">1</span>–<span className="kbd">4</span>
+            {chosen !== null ? (
+              <>
+                {" "}
+                · <span className="kbd">Enter</span>
+              </>
+            ) : null}
           </span>
           {chosen !== null && (
             <button type="button" className="btn" onClick={goNext}>

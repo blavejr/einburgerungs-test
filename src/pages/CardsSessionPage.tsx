@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { Navigate, useNavigate } from "react-router";
 import { AnswerInfo } from "@/components/question/AnswerInfo";
 import { QuestionImage } from "@/components/question/QuestionImage";
+import { EnglishToggle } from "@/components/ui/EnglishToggle";
 import { CATEGORIES } from "@/data/categories";
 import { QUESTIONS_BY_ID } from "@/data/questions";
 import { useProgress } from "@/context/ProgressContext";
@@ -79,13 +80,14 @@ export function CardsSessionPage() {
         <button type="button" className="btn ghost sm" onClick={() => navigate("/")}>
           ← Beenden
         </button>
-        <b>Karteikarten</b>
+        <b>Karten</b>
         <div className="prog">
           <i style={{ width: `${(cards.idx / cards.ids.length) * 100}%` }} />
         </div>
-        <span style={{ fontSize: 13, fontWeight: 700, color: "var(--ink2)" }}>
+        <span className="learn-count">
           {cards.idx + 1}/{cards.ids.length}
         </span>
+        <EnglishToggle />
       </div>
       <div className="fc-wrap">
         <div className={`fc${cards.flipped ? " flip" : ""}`} onClick={flip}>

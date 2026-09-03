@@ -3,31 +3,26 @@ import { useProgress } from "@/context/ProgressContext";
 import { useSession } from "@/context/SessionContext";
 
 export function TestPage() {
-  const { store, setCfg } = useProgress();
+  const { store } = useProgress();
   const { startTest } = useSession();
   const history = store.tests.slice(-8).reverse();
 
   return (
     <div className="view setup">
-      <h1>Prüfungssimulation</h1>
+      <h1>Prüfung</h1>
       <p className="lead">
-        Wie im echten Test: 30 Fragen aus dem Bundeskatalog + 3 Fragen zu Bayern, 60 Minuten, keine
-        Rückmeldung bis zum Schluss. Bestanden ab {PASS_SCORE} richtigen Antworten.
+        Wie im echten Test: 30 Bundesfragen + 3 zu Bayern, 60 Minuten, erst am Ende die Auswertung.
+        Bestanden ab {PASS_SCORE} richtigen.
+        {store.cfg.en && (
+          <span className="en-lead">
+            Same as the real exam: 30 federal + 3 Bavaria, 60 minutes, no feedback until the end. Pass at {PASS_SCORE}.
+          </span>
+        )}
       </p>
       <div className="card">
-        <div className="row">
-          <button type="button" className="btn gold" onClick={startTest}>
-            Prüfung starten
-          </button>
-          <label style={{ fontSize: 14, fontWeight: 600, color: "var(--ink2)", display: "flex", gap: 6, alignItems: "center" }}>
-            <input
-              type="checkbox"
-              checked={store.cfg.en}
-              onChange={(event) => setCfg({ en: event.target.checked })}
-            />
-            Englisch anzeigen
-          </label>
-        </div>
+        <button type="button" className="btn gold" onClick={startTest}>
+          Prüfung starten
+        </button>
       </div>
       {history.length > 0 && (
         <>
