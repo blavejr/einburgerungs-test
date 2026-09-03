@@ -11,7 +11,6 @@ import { QUESTIONS_BY_ID } from "@/data/questions";
 import { useProgress } from "@/context/ProgressContext";
 import { useSession } from "@/context/SessionContext";
 import { useKeyboard } from "@/hooks/useKeyboard";
-import { previewBox } from "@/lib/progress";
 import { insertLater } from "@/lib/queue";
 import { shuffle } from "@/lib/shuffle";
 
@@ -141,7 +140,7 @@ export function LearnSessionPage() {
   if (!question) return <Navigate to="/learn" replace />;
 
   const correct = chosen !== null && chosen === question.k;
-  const box = chosen !== null ? previewBox(store, question.i, correct) : 0;
+  const box = record?.box ?? 0;
 
   return (
     <div className="view">
