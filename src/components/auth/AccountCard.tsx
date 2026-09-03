@@ -13,8 +13,8 @@ export function AccountCard({ saving = false }: { saving?: boolean }) {
 
   if (!configured) {
     return (
-      <div className="card" id="konto">
-        <p style={{ margin: 0, color: "var(--ink2)", fontSize: 14 }}>
+      <div className="card account-card" id="konto">
+        <p className="account-copy">
           Cloud-Sync ist hier nicht konfiguriert. Lokal bleibt der Fortschritt im Browser.
         </p>
       </div>
@@ -37,21 +37,21 @@ export function AccountCard({ saving = false }: { saving?: boolean }) {
   }
 
   return (
-    <div className="card" id="konto">
+    <div className="card account-card" id="konto">
       {!ready ? (
-        <p style={{ margin: 0, color: "var(--ink2)", fontSize: 14 }}>Konto wird geprüft…</p>
+        <p className="account-copy">Konto wird geprüft…</p>
       ) : user ? (
         <>
-          <p style={{ margin: "0 0 6px", fontWeight: 800 }}>{user.name}</p>
-          <p style={{ margin: "0 0 12px", color: "var(--ink2)", fontSize: 14 }}>{user.email}</p>
-          <p style={{ margin: "0 0 14px", color: "var(--ink2)", fontSize: 14 }}>
+          <p className="account-name">{user.name}</p>
+          <p className="account-email">{user.email}</p>
+          <p className="account-copy">
             {saving
               ? "Fortschritt wird gerade in die Cloud geschrieben…"
               : "Fragen, Wörter, Prüfungstermine und Tests hängen an diesem Konto – Handy und Laptop teilen denselben Stand."}
           </p>
           <button
             type="button"
-            className="btn sec"
+            className="btn sec account-action"
             onClick={async () => {
               await logout();
               toast("Abgemeldet – Stand bleibt in diesem Browser");
@@ -61,17 +61,25 @@ export function AccountCard({ saving = false }: { saving?: boolean }) {
           </button>
         </>
       ) : (
-        <form onSubmit={onSubmit}>
-          <p style={{ margin: "0 0 12px", color: "var(--ink2)", fontSize: 14 }}>
+        <form className="account-form" onSubmit={onSubmit}>
+          <p className="account-copy">
             Ohne Konto merkt sich nur dieser Browser den Stand – und mancher Handy-Browser löscht das
             nach einer Weile. Mit Konto liegt er in der Cloud.
           </p>
-          <div className="row" style={{ marginBottom: 8 }}>
-            <button type="button" className={`chip ${mode === "login" ? "on" : ""}`} onClick={() => setMode("login")}>
+          <div className="account-modes" role="tablist" aria-label="Konto">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === "login"}
+              className={`chip ${mode === "login" ? "on" : ""}`}
+              onClick={() => setMode("login")}
+            >
               Anmelden
             </button>
             <button
               type="button"
+              role="tab"
+              aria-selected={mode === "register"}
               className={`chip ${mode === "register" ? "on" : ""}`}
               onClick={() => setMode("register")}
             >
@@ -84,6 +92,8 @@ export function AccountCard({ saving = false }: { saving?: boolean }) {
               <input
                 id="acc-name"
                 autoComplete="name"
+                autoCapitalize="words"
+                enterKeyHint="next"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 required
@@ -94,7 +104,12 @@ export function AccountCard({ saving = false }: { saving?: boolean }) {
           <input
             id="acc-email"
             type="email"
+            inputMode="email"
             autoComplete="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            enterKeyHint="next"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             required
@@ -104,16 +119,15 @@ export function AccountCard({ saving = false }: { saving?: boolean }) {
             id="acc-pass"
             type="password"
             autoComplete={mode === "register" ? "new-password" : "current-password"}
+            enterKeyHint="go"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             minLength={8}
             required
           />
-          <div className="row" style={{ marginTop: 16 }}>
-            <button type="submit" className="btn" disabled={busy}>
-              {busy ? "Bitte warten…" : mode === "register" ? "Konto anlegen" : "Anmelden"}
-            </button>
-          </div>
+          <button type="submit" className="btn account-action" disabled={busy}>
+            {busy ? "Bitte warten…" : mode === "register" ? "Konto anlegen" : "Anmelden"}
+          </button>
         </form>
       )}
     </div>

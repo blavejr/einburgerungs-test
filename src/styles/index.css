@@ -17,7 +17,7 @@ input,select{font:inherit}
 
 /* ---------- top bar ---------- */
 .top{position:sticky;top:0;z-index:20;background:rgba(241,242,244,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.top-in{max-width:1040px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.top-in{max-width:1040px;margin:0 auto;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .brand{font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;margin-right:auto}
 .brand .flag{display:inline-block;width:18px;height:12px;background:linear-gradient(#000 33.3%,#dd0000 33.3% 66.6%,#ffce00 66.6%);border-radius:2px}
 .brand small{color:var(--mute);font-weight:600}
@@ -27,7 +27,7 @@ nav a.on,nav button.on{background:var(--ink);color:#fff}
 .top .stat{display:flex;gap:14px;font-size:13px;color:var(--ink2);font-weight:600}
 .top .stat b{color:var(--ink);font-weight:800}
 
-main{max-width:1040px;margin:0 auto;padding:20px 16px 80px}
+main{max-width:1040px;margin:0 auto;padding:20px 16px calc(80px + env(safe-area-inset-bottom,0px))}
 .view{animation:none}
 h1{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:6px 0 4px}
 h2{font-size:18px;font-weight:800;letter-spacing:-.01em;margin:26px 0 10px}
@@ -43,7 +43,7 @@ p.lead{color:var(--ink2);margin:0 0 18px;max-width:64ch}
 .btn.ghost{background:transparent;color:var(--ink2);padding:8px 10px}
 .btn.sm{padding:7px 12px;font-size:14px}
 .btn[disabled]{opacity:.45;cursor:default}
-.chip{padding:6px 12px;border-radius:999px;background:#E6E8EC;font-size:13px;font-weight:700;color:var(--ink2)}
+.chip{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:999px;background:#E6E8EC;font-size:13px;font-weight:700;color:var(--ink2)}
 .chip.on{background:var(--ink);color:#fff}
 .kbd{font-size:11px;padding:1px 6px;border:1px solid var(--line);border-radius:5px;color:var(--mute);background:#fff}
 
@@ -192,15 +192,24 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 3px;border-radius:4p
 
 .account-banner{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--gold-soft);border-radius:var(--radius);padding:14px 16px;margin:0 0 18px}
 .account-banner p{margin:4px 0 0;font-size:14px;color:var(--ink2);font-weight:600}
-.account-chip{color:var(--ink);text-decoration:none;font-weight:800}
+.account-chip{flex:none;max-width:42vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:7px 12px;border-radius:999px;background:#E6E8EC;color:var(--ink);text-decoration:none;font-weight:800;font-size:13px}
+.account-chip.in{background:var(--gold-soft)}
+.account-card{scroll-margin-top:84px}
+.account-name{margin:0 0 4px;font-weight:800}
+.account-email{margin:0 0 12px;color:var(--ink2);font-size:14px;word-break:break-word}
+.account-copy{margin:0 0 14px;color:var(--ink2);font-size:14px}
+.account-form .account-copy{margin-bottom:12px}
+.account-modes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.account-modes .chip{min-height:40px;padding:8px 14px}
+.account-action{margin-top:16px}
 
 /* ---------- settings ---------- */
 .settings label{display:block;font-size:13px;font-weight:700;color:var(--mute);margin:12px 0 4px}
-.settings input,.settings select{padding:9px 12px;border-radius:10px;border:1.5px solid var(--line);background:#fff}
-.settings input[type="text"],.settings input[type="email"],.settings input[type="password"]{width:100%;max-width:420px}
+.settings input,.settings select{padding:11px 12px;border-radius:10px;border:1.5px solid var(--line);background:#fff;font-size:16px}
+.settings input[type="text"],.settings input[type="email"],.settings input[type="password"],.settings input[type="date"],.settings input[type="number"],.settings select{width:100%;max-width:420px}
 textarea{width:100%;min-height:90px;font:12px ui-monospace,monospace;border-radius:10px;border:1.5px solid var(--line);padding:8px}
 
-.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-weight:700;font-size:14px;box-shadow:0 10px 30px -10px rgba(0,0,0,.5);z-index:50;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast{position:fixed;left:50%;bottom:max(22px, calc(12px + env(safe-area-inset-bottom,0px)));transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-weight:700;font-size:14px;box-shadow:0 10px 30px -10px rgba(0,0,0,.5);z-index:50;opacity:0;pointer-events:none;transition:opacity .2s;max-width:min(92vw,420px);text-align:center}
 .toast.show{opacity:1}
 
 @media (max-width:720px){
@@ -208,8 +217,14 @@ textarea{width:100%;min-height:90px;font:12px ui-monospace,monospace;border-radi
   .map-cat{flex-direction:column;gap:4px}.map-cat .lbl{width:auto}
   .q{padding:16px}.q .qt{font-size:19px}
   .top .stat{display:none}
-  nav{width:100%;overflow-x:auto;scrollbar-width:none}nav::-webkit-scrollbar{display:none}
-  nav a,nav button{white-space:nowrap;padding:7px 11px;font-size:13px}
+  nav{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}nav::-webkit-scrollbar{display:none}
+  nav a,nav button{white-space:nowrap;padding:8px 12px;font-size:13px}
   h1{font-size:24px}
+  .account-banner{flex-direction:column;align-items:stretch}
+  .account-banner .btn{width:100%;justify-content:center;min-height:44px}
+  .settings input,.settings select{max-width:none}
+  .account-action{width:100%;justify-content:center;min-height:44px}
+  .account-modes .chip{flex:1;justify-content:center}
+  .chip{display:inline-flex;align-items:center;justify-content:center}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}

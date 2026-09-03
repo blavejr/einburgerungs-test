@@ -1,3 +1,4 @@
+import { isAppStore, normalizeStore } from "@/lib/storage";
 import type { AppStore } from "@/types";
 
 const TOKEN_KEY = "ebt-auth-v1";
@@ -7,6 +8,20 @@ export interface AuthUser {
   id: string;
   name: string;
   email: string;
+}
+
+export interface AuthSuccess {
+  user: AuthUser;
+  token: string;
+}
+
+export interface MeSuccess {
+  user: AuthUser;
+}
+
+export interface ProgressSuccess {
+  store: AppStore | null;
+  updatedAt: string | null;
 }
 
 export class ApiError extends Error {
@@ -45,6 +60,13 @@ export function setToken(token: string | null): void {
   }
 }
 
+function errorMessage(body: unknown, status: number): string {
+  if (body && typeof body === "object" && "error" in body && typeof body.error === "string") {
+    return body.error;
+  }
+  return `Fehler (${status})`;
+}
+
 async function parseBody(response: Response): Promise<unknown> {
   const text = await response.text();
   if (!text) return null;
@@ -76,28 +98,24 @@ export async function api<T>(path: string, init: RequestInit = {}, retried = fal
   const body = await parseBody(response);
   if (!response.ok) {
     if (response.status === 401) setToken(null);
-    const message =
-      body && typeof body === "object" && "error" in body && typeof body.error === "string"
-        ? body.error
-        : `Fehler (${response.status})`;
-    throw new ApiError(message, response.status);
+    throw new ApiError(errorMessage(body, response.status), response.status);
   }
   return body as T;
 }
 
 export function fetchMe() {
-  return api<{ user: AuthUser }>("/api/auth/me");
+  return api<MeSuccess>("/api/auth/me");
 }
 
 export function loginRequest(email: string, password: string) {
-  return api<{ user: AuthUser; token: string }>("/api/auth/login", {
+  return api<AuthSuccess>("/api/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
   });
 }
 
 export function registerRequest(name: string, email: string, password: string) {
-  return api<{ user: AuthUser; token: string }>("/api/auth/register", {
+  return api<AuthSuccess>("/api/auth/register", {
     method: "POST",
     body: JSON.stringify({ name, email, password }),
   });
@@ -107,12 +125,16 @@ export function logoutRequest() {
   return api<{ ok: boolean }>("/api/auth/logout", { method: "POST" });
 }
 
-export function getProgressRequest() {
-  return api<{ store: AppStore | null; updatedAt: string | null }>("/api/progress");
+export async function getProgressRequest(): Promise<ProgressSuccess> {
+  const data = await api<ProgressSuccess>("/api/progress");
+  return {
+    store: data.store && isAppStore(data.store) ? normalizeStore(data.store) : null,
+    updatedAt: data.updatedAt ?? null,
+  };
 }
 
 export function putProgressRequest(store: AppStore) {
-  return api<{ store: AppStore; updatedAt: string }>("/api/progress", {
+  return api<ProgressSuccess>("/api/progress", {
     method: "PUT",
     body: JSON.stringify({ store }),
   });

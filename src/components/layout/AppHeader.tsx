@@ -21,6 +21,7 @@ export function AppHeader() {
   const today = getTodayStats(store);
   const due = countDue(store);
   const streak = dashboardStats(store).streak;
+  const accountLabel = user ? user.name.split(" ")[0] : "Konto";
 
   return (
     <div className="top">
@@ -28,6 +29,9 @@ export function AppHeader() {
         <NavLink to="/" end className="brand">
           <span className="flag" />
           Einbürgerungstest <small>Bayern</small>
+        </NavLink>
+        <NavLink to="/settings#konto" className={`account-chip${user ? " in" : ""}`}>
+          {accountLabel}
         </NavLink>
         <div className="stat">
           <span>
@@ -42,11 +46,6 @@ export function AppHeader() {
           <span>
             <b>{due}</b> fällig
           </span>
-          {user ? (
-            <NavLink to="/settings#konto" className="account-chip">
-              {user.name}
-            </NavLink>
-          ) : null}
         </div>
         <nav>
           {links.map((link) => (
