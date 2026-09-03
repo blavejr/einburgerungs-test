@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { Navigate, useNavigate } from "react-router";
+import { AnswerInfo } from "@/components/question/AnswerInfo";
 import { QuestionImage } from "@/components/question/QuestionImage";
 import { CATEGORIES } from "@/data/categories";
 import { QUESTIONS_BY_ID } from "@/data/questions";
@@ -113,6 +114,9 @@ export function CardsSessionPage() {
             <div className="tap">Wusstest du es?</div>
           </div>
         </div>
+        {cards.flipped && (
+          <AnswerInfo question={question} english={store.cfg.en} defaultOpen />
+        )}
         <div className="fc-acts">
           <button
             type="button"

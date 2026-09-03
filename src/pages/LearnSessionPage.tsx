@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { Navigate, useNavigate } from "react-router";
+import { AnswerInfo } from "@/components/question/AnswerInfo";
 import { CategoryLabel } from "@/components/question/CategoryLabel";
 import { OptionList } from "@/components/question/OptionList";
 import { QuestionImage } from "@/components/question/QuestionImage";
@@ -197,6 +198,12 @@ export function LearnSessionPage() {
                 <span style={{ fontWeight: 600, fontSize: 13 }}>kommt gleich noch einmal</span>
               </div>
             )}
+            <AnswerInfo
+              key={`${question.i}-${correct ? "ok" : "no"}`}
+              question={question}
+              english={store.cfg.en}
+              defaultOpen={!correct}
+            />
           </div>
         )}
         <div className="q-foot">

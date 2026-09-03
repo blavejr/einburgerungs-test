@@ -20,6 +20,8 @@ export interface Question {
   k: number;
   eq: string;
   ea: string[];
+  info: string;
+  einfo: string;
   img?: string;
   alt?: string;
 }
