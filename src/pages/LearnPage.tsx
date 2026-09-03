@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import { ChipGroup } from "@/components/ui/ChipGroup";
 import { CATEGORIES, CATEGORY_ORDER } from "@/data/categories";
 import { useProgress } from "@/context/ProgressContext";
@@ -62,7 +63,10 @@ export function LearnPage() {
             onChange={setMode}
           />
           {mode === "smart" && (
-            <p className="grp-hint">Zuerst was fällig oder falsch war, dann Neues – über alle Themen gemischt.</p>
+            <p className="grp-hint">
+              Zuerst was fällig oder falsch war, dann Neues.{" "}
+              <Link to="/topics">Nur ein Thema →</Link>
+            </p>
           )}
         </div>
         {mode === "cat" && (

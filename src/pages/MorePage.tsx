@@ -3,6 +3,13 @@ import { useProgress } from "@/context/ProgressContext";
 
 const ITEMS = [
   {
+    to: "/topics",
+    title: "Themen",
+    en: "Topics",
+    de: "Nach Grundrechte, Wahlen, Bayern… getrennt üben.",
+    hint: "Practice one subject at a time.",
+  },
+  {
     to: "/cards",
     title: "Karteikarten",
     en: "Flashcards",
@@ -13,8 +20,8 @@ const ITEMS = [
     to: "/browse",
     title: "Alle Fragen",
     en: "All questions",
-    de: "Katalog zum Nachschlagen – mit Antwort und Erklärung.",
-    hint: "Look up any question with its answer and explanation.",
+    de: "Katalog zum Nachschlagen.",
+    hint: "Look up any question.",
   },
   {
     to: "/map",
@@ -27,8 +34,8 @@ const ITEMS = [
     to: "/settings",
     title: "Einstellungen",
     en: "Settings",
-    de: "Prüfungstermin, Tagesziel, Konto und Export.",
-    hint: "Exam date, daily goal, account and export.",
+    de: "Prüfungstermin, Tagesziel, Konto.",
+    hint: "Exam date, daily goal, account.",
   },
 ] as const;
 
@@ -39,8 +46,8 @@ export function MorePage() {
     <div className="view setup">
       <h1>Mehr</h1>
       <p className="lead">
-        Alles, was du nicht jeden Tag brauchst.
-        {store.cfg.en && <span className="en-lead">The quieter tools — flashcards, the full list, progress, settings.</span>}
+        Themen, Karten, Katalog und Einstellungen.
+        {store.cfg.en && <span className="en-lead">Topics, flashcards, the full list, and settings.</span>}
       </p>
       <div className="more-list">
         {ITEMS.map((item) => (

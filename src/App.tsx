@@ -21,6 +21,7 @@ import { SettingsPage } from "@/pages/SettingsPage";
 import { TestPage } from "@/pages/TestPage";
 import { TestResultPage } from "@/pages/TestResultPage";
 import { TestRunPage } from "@/pages/TestRunPage";
+import { TopicsPage } from "@/pages/TopicsPage";
 import { VocabPage } from "@/pages/VocabPage";
 import { VocabSessionPage } from "@/pages/VocabSessionPage";
 
@@ -54,6 +55,7 @@ function AppShell() {
           <Route path="/test/run" element={<TestRunPage />} />
           <Route path="/test/result" element={<TestResultPage />} />
           <Route path="/browse" element={<BrowsePage />} />
+          <Route path="/topics" element={<TopicsPage />} />
           <Route path="/map" element={<MapPage />} />
           <Route path="/more" element={<MorePage />} />
           <Route path="/settings" element={<SettingsPage />} />
