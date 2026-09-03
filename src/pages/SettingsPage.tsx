@@ -129,7 +129,9 @@ export function SettingsPage() {
         </p>
         <p>
           <b style={{ color: "var(--ink)" }}>Sofortige Korrektur + Wiederholung in der Sitzung.</b>{" "}
-          Falsche Fragen kommen vier Fragen später noch einmal, solange die Erinnerung frisch ist.
+          Falsche Fragen kommen vier Fragen später noch einmal. Nach einer richtigen Antwort kannst
+          du <b style={{ color: "var(--ink)" }}>Noch unsicher</b> tippen – dann kommt sie nach etwa
+          sechs Fragen wieder, ohne als Fehler zu zählen, und bleibt heute fällig.
         </p>
         <p>
           <b style={{ color: "var(--ink)" }}>Interleaving.</b> Neue Fragen werden themenübergreifend

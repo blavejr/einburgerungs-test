@@ -13,10 +13,13 @@ export function MapPage() {
     <div className="view">
       <h1>Fortschrittskarte</h1>
       <p className="lead">
-        Jedes Kästchen ist eine Frage. Grün sitzt, rot war falsch. Antippen zum Üben. {seen}/
-        {TOTAL_QUESTIONS} gesehen.
+        Jedes Kästchen ist eine Frage. Grün sitzt, gold ist noch unsicher, rot war falsch. Antippen
+        zum Üben. {seen}/{TOTAL_QUESTIONS} gesehen.
         {store.cfg.en && (
-          <span className="en-lead">Each box is a question. Green is solid, red was wrong. Tap one to practice.</span>
+          <span className="en-lead">
+            Each box is a question. Green is solid, gold is still shaky, red was wrong. Tap one to
+            practice.
+          </span>
         )}
       </p>
       <div className="card">

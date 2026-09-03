@@ -2,12 +2,13 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useReducer,
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { getProgressRequest, putProgressRequest } from "@/lib/api";
-import { applyMark, applyVocabMark } from "@/lib/progress";
+import { applyMark, applyVocabMark, applyWarm } from "@/lib/progress";
 import { createEmptyStore, hasProgressData, isAppStore, loadStore, normalizeStore, saveStore } from "@/lib/storage";
 import type { AppConfig, AppStore, TestHistoryEntry } from "@/types";
 
 type Action =
   | { type: "mark"; id: number; correct: boolean }
+  | { type: "markWarm"; id: number }
   | { type: "markVocab"; id: string; correct: boolean }
   | { type: "setCfg"; cfg: Partial<AppConfig> }
   | { type: "addTest"; result: TestHistoryEntry }
@@ -18,6 +19,7 @@ interface ProgressContextValue {
   store: AppStore;
   cloudSaving: boolean;
   mark: (id: number, correct: boolean) => void;
+  markWarm: (id: number) => void;
   markVocab: (id: string, correct: boolean) => void;
   setCfg: (cfg: Partial<AppConfig>) => void;
   addTest: (result: TestHistoryEntry) => void;
@@ -32,6 +34,8 @@ function reducer(state: AppStore, action: Action): AppStore {
   switch (action.type) {
     case "mark":
       return applyMark(state, action.id, action.correct);
+    case "markWarm":
+      return applyWarm(state, action.id);
     case "markVocab":
       return applyVocabMark(state, action.id, action.correct);
     case "setCfg":
@@ -118,6 +122,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "mark", id, correct });
   }, []);
 
+  const markWarm = useCallback((id: number) => {
+    dispatch({ type: "markWarm", id });
+  }, []);
+
   const markVocab = useCallback((id: string, correct: boolean) => {
     dispatch({ type: "markVocab", id, correct });
   }, []);
@@ -143,8 +151,8 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   const exportJson = useCallback(() => JSON.stringify(store), [store]);
 
   const value = useMemo(
-    () => ({ store, cloudSaving, mark, markVocab, setCfg, addTest, importStore, reset, exportJson }),
-    [store, cloudSaving, mark, markVocab, setCfg, addTest, importStore, reset, exportJson],
+    () => ({ store, cloudSaving, mark, markWarm, markVocab, setCfg, addTest, importStore, reset, exportJson }),
+    [store, cloudSaving, mark, markWarm, markVocab, setCfg, addTest, importStore, reset, exportJson],
   );
 
   return <ProgressContext value={value}>{children}</ProgressContext>;

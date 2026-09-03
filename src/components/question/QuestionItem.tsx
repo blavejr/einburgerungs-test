@@ -19,8 +19,14 @@ export function QuestionItem({
   const { store } = useProgress();
   const record = store.p[question.i];
   const seen = Boolean(record?.seen);
-  const color = seen ? (record?.last === "w" ? "var(--red)" : "var(--green)") : "#D9DCE2";
-  const title = seen ? `${record?.ok}✓ ${record?.ko}✗` : "noch nie";
+  const color = seen
+    ? record?.warm
+      ? "var(--gold)"
+      : record?.last === "w"
+        ? "var(--red)"
+        : "var(--green)"
+    : "#D9DCE2";
+  const title = seen ? `${record?.ok}✓ ${record?.ko}✗${record?.warm ? " · warm" : ""}` : "noch nie";
 
   return (
     <div className="item">

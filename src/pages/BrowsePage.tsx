@@ -30,8 +30,9 @@ export function BrowsePage() {
         return false;
       }
       if (only === "w") return store.p[question.i]?.last === "w";
+      if (only === "h") return Boolean(store.p[question.i]?.warm);
       if (only === "n") return isNew(store, question.i);
-      if (only === "r") return store.p[question.i]?.last === "r";
+      if (only === "r") return store.p[question.i]?.last === "r" && !store.p[question.i]?.warm;
       return true;
     });
   }, [cat, only, query, store]);
@@ -62,6 +63,7 @@ export function BrowsePage() {
         <select value={only} onChange={(event) => setOnly(event.target.value)}>
           <option value="">Alle</option>
           <option value="w">Zuletzt falsch</option>
+          <option value="h">Warm</option>
           <option value="n">Noch nie geübt</option>
           <option value="r">Richtig</option>
         </select>

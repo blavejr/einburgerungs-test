@@ -3,15 +3,17 @@ import { Navigate, useNavigate } from "react-router";
 import { AnswerInfo } from "@/components/question/AnswerInfo";
 import { QuestionImage } from "@/components/question/QuestionImage";
 import { EnglishToggle } from "@/components/ui/EnglishToggle";
+import { WARM_RETRY_GAP } from "@/data/constants";
 import { CATEGORIES } from "@/data/categories";
 import { QUESTIONS_BY_ID } from "@/data/questions";
 import { useProgress } from "@/context/ProgressContext";
 import { useSession } from "@/context/SessionContext";
 import { useKeyboard } from "@/hooks/useKeyboard";
+import { insertLater } from "@/lib/queue";
 
 export function CardsSessionPage() {
   const navigate = useNavigate();
-  const { store, mark } = useProgress();
+  const { store, mark, markWarm } = useProgress();
   const { cards, setCards, startCards } = useSession();
 
   const flip = useCallback(() => {
@@ -20,9 +22,22 @@ export function CardsSessionPage() {
   }, [cards, setCards]);
 
   const rate = useCallback(
-    (ok: boolean) => {
+    (ok: boolean | "warm") => {
       if (!cards || !cards.flipped) return;
       const id = cards.ids[cards.idx];
+      if (ok === "warm") {
+        mark(id, true);
+        markWarm(id);
+        const ids = insertLater(cards.ids, cards.idx, id, WARM_RETRY_GAP);
+        setCards({
+          ...cards,
+          ids,
+          idx: cards.idx + 1,
+          ok: cards.ok + 1,
+          flipped: false,
+        });
+        return;
+      }
       mark(id, ok);
       setCards({
         ...cards,
@@ -32,7 +47,7 @@ export function CardsSessionPage() {
         flipped: false,
       });
     },
-    [cards, mark, setCards],
+    [cards, mark, markWarm, setCards],
   );
 
   useKeyboard(
@@ -44,6 +59,7 @@ export function CardsSessionPage() {
           flip();
         } else if (event.key === "1") rate(false);
         else if (event.key === "2") rate(true);
+        else if (event.key === "3" || event.key.toLowerCase() === "w") rate("warm");
       },
       [cards, flip, rate],
     ),
@@ -126,6 +142,13 @@ export function CardsSessionPage() {
             onClick={() => rate(false)}
           >
             ✗ Nicht gewusst <span className="kbd" style={{ color: "inherit", borderColor: "currentColor" }}>1</span>
+          </button>
+          <button
+            type="button"
+            className={`btn warm${cards.flipped ? "" : " hidden"}`}
+            onClick={() => rate("warm")}
+          >
+            ◐ Warm <span className="kbd" style={{ color: "inherit", borderColor: "currentColor" }}>W</span>
           </button>
           <button
             type="button"

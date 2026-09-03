@@ -27,8 +27,8 @@ const ITEMS = [
     to: "/map",
     title: "Fortschrittskarte",
     en: "Progress map",
-    de: "Jede Frage als Kästchen: grün sitzt, rot war falsch.",
-    hint: "Each box is a question: green is solid, red was wrong.",
+    de: "Jede Frage als Kästchen: grün sitzt, gold noch unsicher, rot falsch.",
+    hint: "Each box is a question: green is solid, gold is shaky, red was wrong.",
   },
   {
     to: "/settings",

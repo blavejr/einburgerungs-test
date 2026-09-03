@@ -3,7 +3,7 @@ import { todayKey } from "@/lib/dates";
 import type { AppStore, ProgressRecord } from "@/types";
 
 export function emptyRecord(): ProgressRecord {
-  return { box: 0, last: null, at: 0, due: 0, seen: 0, ok: 0, ko: 0 };
+  return { box: 0, last: null, at: 0, due: 0, seen: 0, ok: 0, ko: 0, warm: false };
 }
 
 export function getRecord(store: AppStore, id: number): ProgressRecord | undefined {
@@ -35,6 +35,25 @@ export function nextRecord(prev: ProgressRecord, correct: boolean, now = Date.no
     ko: prev.ko + (correct ? 0 : 1),
     box,
     due: now + INTERVALS[box] * DAY_MS,
+    warm: false,
+  };
+}
+
+export function applyWarm(store: AppStore, id: number, now = Date.now()): AppStore {
+  const prev = recordOrEmpty(store, id);
+  const box = prev.last === "r" ? Math.max(0, prev.box - 1) : prev.box;
+  return {
+    ...store,
+    p: {
+      ...store.p,
+      [id]: {
+        ...prev,
+        box,
+        due: now,
+        last: "r",
+        warm: true,
+      },
+    },
   };
 }
 
@@ -100,7 +119,7 @@ export function dotClass(store: AppStore, id: number, now = Date.now()): string 
   const record = store.p[id];
   if (!record || !record.seen) return "";
 
-  let cls = record.last === "w" ? "w" : `r${Math.max(1, record.box)}`;
+  let cls = record.warm ? "warm" : record.last === "w" ? "w" : `r${Math.max(1, record.box)}`;
   if (record.last === "w" && now - record.at > 3 * DAY_MS) cls += " old";
   if (new Date(record.at).toISOString().slice(0, 10) === todayKey()) cls += " today";
   return cls;

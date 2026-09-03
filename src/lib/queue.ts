@@ -82,6 +82,12 @@ export function pickCardIds(store: AppStore, options: CardsOptions): number[] {
   return ids.slice(0, n);
 }
 
+export function insertLater(queue: number[], idx: number, id: number, gap: number): number[] {
+  if (queue.slice(idx + 1).includes(id)) return queue;
+  const pos = Math.min(queue.length, idx + gap);
+  return [...queue.slice(0, pos), id, ...queue.slice(pos)];
+}
+
 export function learnTitle(options: LearnOptions): string {
   if (options.mode === "cat" && options.cat) return CATEGORIES[options.cat].de;
   return {

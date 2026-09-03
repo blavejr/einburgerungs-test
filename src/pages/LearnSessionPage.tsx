@@ -6,20 +6,22 @@ import { OptionList } from "@/components/question/OptionList";
 import { QuestionImage } from "@/components/question/QuestionImage";
 import { QuestionItem } from "@/components/question/QuestionItem";
 import { EnglishToggle } from "@/components/ui/EnglishToggle";
-import { INTERVALS } from "@/data/constants";
+import { INTERVALS, WARM_RETRY_GAP, WRONG_RETRY_GAP } from "@/data/constants";
 import { QUESTIONS_BY_ID } from "@/data/questions";
 import { useProgress } from "@/context/ProgressContext";
 import { useSession } from "@/context/SessionContext";
 import { useKeyboard } from "@/hooks/useKeyboard";
 import { previewBox } from "@/lib/progress";
+import { insertLater } from "@/lib/queue";
 import { shuffle } from "@/lib/shuffle";
 
 export function LearnSessionPage() {
   const navigate = useNavigate();
-  const { store, mark } = useProgress();
+  const { store, mark, markWarm } = useProgress();
   const { learn, setLearn, startLearn } = useSession();
   const [chosen, setChosen] = useState<number | null>(null);
   const [early, setEarly] = useState(false);
+  const [warmed, setWarmed] = useState(false);
 
   const finished = Boolean(learn && (early || learn.idx >= learn.queue.length));
   const question = learn && !finished ? QUESTIONS_BY_ID[learn.queue[learn.idx]] : undefined;
@@ -40,7 +42,7 @@ export function LearnSessionPage() {
           ? [...learn.retryIds, question.i]
           : learn.retryIds,
         queue: !correct && !learn.retryIds.includes(question.i)
-          ? insertRetry(learn.queue, learn.idx, question.i)
+          ? insertLater(learn.queue, learn.idx, question.i, WRONG_RETRY_GAP)
           : learn.queue,
         total: !correct && !learn.retryIds.includes(question.i) ? learn.total + 1 : learn.total,
       });
@@ -51,8 +53,23 @@ export function LearnSessionPage() {
   const goNext = useCallback(() => {
     if (!learn || chosen === null) return;
     setChosen(null);
+    setWarmed(false);
     setLearn({ ...learn, idx: learn.idx + 1 });
   }, [chosen, learn, setLearn]);
+
+  const keepWarm = useCallback(() => {
+    if (!learn || !question || chosen === null || chosen !== question.k || warmed) return;
+    markWarm(question.i);
+    const nextQueue = insertLater(learn.queue, learn.idx, question.i, WARM_RETRY_GAP);
+    const prevWarm = learn.warmIds ?? [];
+    setWarmed(true);
+    setLearn({
+      ...learn,
+      warmIds: prevWarm.includes(question.i) ? prevWarm : [...prevWarm, question.i],
+      queue: nextQueue,
+      total: nextQueue.length,
+    });
+  }, [chosen, learn, markWarm, question, setLearn, warmed]);
 
   useKeyboard(
     useCallback(
@@ -62,9 +79,11 @@ export function LearnSessionPage() {
           answer(Number(event.key) - 1);
         } else if (event.key === "Enter" && chosen !== null) {
           goNext();
+        } else if (event.key.toLowerCase() === "w" && chosen !== null) {
+          keepWarm();
         }
       },
-      [answer, chosen, finished, goNext, question],
+      [answer, chosen, finished, goNext, keepWarm, question],
     ),
   );
 
@@ -151,6 +170,9 @@ export function LearnSessionPage() {
           <span>Frage {question.i}</span>
           <CategoryLabel id={question.c} />
           {learn.retryIds.includes(question.i) && <span className="retry">Wiederholung</span>}
+          {!learn.retryIds.includes(question.i) && learn.warmIds?.includes(question.i) && (
+            <span className="warm">Noch einmal</span>
+          )}
           {record?.seen ? <span className="quiet">Stufe {record.box}</span> : <span className="quiet">neu</span>}
         </div>
         <p className="qt">{question.q}</p>
@@ -167,11 +189,15 @@ export function LearnSessionPage() {
         {chosen !== null && (
           <div>
             {correct ? (
-              <div className="fb ok">
-                ✓ Richtig{box >= 3 ? " – sitzt jetzt" : ""}
+              <div className={`fb ${warmed ? "warm" : "ok"}`}>
+                {warmed ? "◐ Warm – kommt in ein paar Fragen noch einmal" : `✓ Richtig${box >= 3 ? " – sitzt jetzt" : ""}`}
                 <span className="grow" />
                 <span style={{ fontWeight: 600, fontSize: 13 }}>
-                  nächste Wiederholung in {INTERVALS[box]} Tag{INTERVALS[box] === 1 ? "" : "en"}
+                  {warmed
+                    ? store.cfg.en
+                      ? "due again today"
+                      : "heute wieder fällig"
+                    : `nächste Wiederholung in ${INTERVALS[box]} Tag${INTERVALS[box] === 1 ? "" : "en"}`}
                 </span>
               </div>
             ) : (
@@ -198,15 +224,27 @@ export function LearnSessionPage() {
             <span className="kbd">1</span>–<span className="kbd">4</span>
             {chosen !== null ? (
               <>
-                {" "}
+                {correct ? (
+                  <>
+                    {" "}
+                    · <span className="kbd">W</span> warm
+                  </>
+                ) : null}{" "}
                 · <span className="kbd">Enter</span>
               </>
             ) : null}
           </span>
           {chosen !== null && (
-            <button type="button" className="btn" onClick={goNext}>
-              Weiter →
-            </button>
+            <div className="foot-acts">
+              {correct && !warmed && (
+                <button type="button" className="btn warm" onClick={keepWarm}>
+                  Noch unsicher
+                </button>
+              )}
+              <button type="button" className="btn" onClick={goNext}>
+                Weiter →
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -214,7 +252,3 @@ export function LearnSessionPage() {
   );
 }
 
-function insertRetry(queue: number[], idx: number, id: number): number[] {
-  const pos = Math.min(queue.length, idx + 4);
-  return [...queue.slice(0, pos), id, ...queue.slice(pos)];
-}

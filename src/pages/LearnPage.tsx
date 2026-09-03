@@ -29,9 +29,13 @@ export function LearnPage() {
     <div className="view setup">
       <h1>Lernen</h1>
       <p className="lead">
-        Eine Frage, eine Antwort, sofort Bescheid. Falsche kommen gleich noch einmal.
+        Eine Frage, eine Antwort, sofort Bescheid. Falsche kommen gleich noch einmal. Richtig,
+        aber unsicher? <b>Noch unsicher</b> holt die Frage nach ein paar anderen zurück.
         {store.cfg.en && (
-          <span className="en-lead">One question, one answer, instant feedback. Misses come back a few questions later.</span>
+          <span className="en-lead">
+            One question, one answer, instant feedback. Misses come back a few questions later. Right
+            but shaky? <b>Noch unsicher</b> brings it back after a few others.
+          </span>
         )}
       </p>
       <div className="card">
